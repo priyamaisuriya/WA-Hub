@@ -140,6 +140,7 @@ class WhatsAppController extends Controller
             return response()->json(['success' => true, 'data' => $data]);
         }
 
+        Log::error('Meta API Send Message Failed: ', $response->json());
         return response()->json(['error' => 'Failed to send message', 'details' => $response->json()], 400);
     }
 
@@ -170,5 +171,25 @@ class WhatsAppController extends Controller
             ->get();
             
         return response()->json($messages);
+    }
+
+    /**
+     * API to add a new contact manually
+     */
+    public function addContact(Request $request)
+    {
+        $request->validate([
+            'phone' => 'required|string',
+            'name' => 'required|string'
+        ]);
+
+        $phone = preg_replace('/[^0-9]/', '', $request->phone);
+
+        $contact = Contact::firstOrCreate(
+            ['phone_number' => $phone],
+            ['name' => $request->name, 'wa_id' => $phone]
+        );
+
+        return response()->json($contact);
     }
 }

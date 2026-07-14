@@ -14,3 +14,4 @@ Route::post('/webhook', [WhatsAppController::class, 'handleWebhook']);
 Route::get('/api/contacts', [WhatsAppController::class, 'getContacts']);
 Route::get('/api/messages/{contact}', [WhatsAppController::class, 'getMessages']);
 Route::post('/api/send-message', [WhatsAppController::class, 'sendMessage']);
+Route::post('/api/contacts', [WhatsAppController::class, 'addContact']);
