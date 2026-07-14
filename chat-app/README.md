@@ -1,58 +1,91 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# WhatsApp Cloud API Web Chat Integration
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This is a Laravel-based web application that integrates directly with the **WhatsApp Cloud API**. It provides a fully functional, real-time web interface where you can view incoming WhatsApp messages from your customers and reply to them directly from your computer.
 
-## About Laravel
+## Features
+- **Real-Time Webhooks:** Instantly receives incoming messages from the WhatsApp Cloud API.
+- **Outbound Messaging:** Send replies directly to customers from the web UI.
+- **Contact Management:** Automatically saves new contacts when they message you.
+- **Chat Interface:** A modern, dark-themed responsive chat UI designed for desktop and mobile.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🚀 Getting Started
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Prerequisites
+1. PHP 8.1+ and Composer
+2. A Meta Developer Account
+3. A WhatsApp Business Account (WABA) with a registered Phone Number
+4. **Ngrok** (for local development webhooks)
 
-## Learning Laravel
+### 1. Installation
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
+Clone the repository and install dependencies:
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone <your-repo-url>
+cd chat-app
+composer install
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Copy the environment file and generate the app key:
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-## Contributing
+### 2. Database Setup
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+This project uses SQLite by default. Ensure the database file exists:
+```bash
+touch database/database.sqlite
+```
+Run the migrations to create the Contacts and Messages tables:
+```bash
+php artisan migrate
+```
 
-## Code of Conduct
+### 3. Meta Developer & Environment Setup
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+In your `.env` file, you need to add your WhatsApp Cloud API credentials.
 
-## Security Vulnerabilities
+```env
+WHATSAPP_TOKEN=your_permanent_or_temporary_access_token
+WHATSAPP_PHONE_ID=your_phone_number_id
+WHATSAPP_BUSINESS_ACCOUNT_ID=your_waba_id
+WHATSAPP_VERIFY_TOKEN=wa_hub_secure_token
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 4. Running Locally & Setting up Webhooks
 
-## License
+To receive messages locally, you must expose your local server to the internet using **Ngrok**.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+1. Start your Laravel development server:
+```bash
+php artisan serve
+```
+
+2. In a new terminal, start Ngrok on port 8000:
+```bash
+ngrok http 8000
+```
+
+3. Go to your **Meta Developer Dashboard -> WhatsApp -> API Setup**.
+4. Set your Webhook URL to: `https://<your-ngrok-url>.ngrok-free.dev/webhook`
+5. Set your Verify Token to: `wa_hub_secure_token`
+6. Click **Verify and Save**.
+7. Click **Manage** and subscribe to the `messages` event.
+
+### 5. Start Chatting!
+
+Open your browser and navigate to:
+`http://localhost:8000`
+
+Send a message from your personal phone to your WhatsApp Business number, and it will instantly pop up in your web chat UI!
+
+---
+
+## Technical Stack
+- **Backend:** Laravel 11 (PHP)
+- **Database:** SQLite
+- **Frontend UI:** Blade Templates, Vanilla CSS, Flexbox
+- **API:** Meta Graph API v19.0
